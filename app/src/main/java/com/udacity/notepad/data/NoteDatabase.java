@@ -25,13 +25,13 @@ public class NoteDatabase {
     }
 
     public List<Note> getAll() {
-        Cursor cursor = helper.getReadableDatabase().query(_TABLE_NAME,
+        Cursor cursor = helper.getReadableDatabase().query(Companion.get_TABLE_NAME(),
                 null,
                 null,
                 null,
                 null,
                 null,
-                CREATED_AT);
+                Companion.getCREATED_AT());
         List<Note> retval = allFromCursor(cursor);
         cursor.close();
         return retval;
@@ -51,13 +51,13 @@ public class NoteDatabase {
             args[i] = Integer.toString(ids[i]);
         }
         String selection = _ID + " IN (" + questionMarks.toString() + ")";
-        Cursor cursor = helper.getReadableDatabase().query(_TABLE_NAME,
+        Cursor cursor = helper.getReadableDatabase().query(Companion.get_TABLE_NAME(),
                 null,
                 selection,
                 args,
                 null,
                 null,
-                CREATED_AT);
+                Companion.getCREATED_AT());
         List<Note> retval = allFromCursor(cursor);
         cursor.close();
         return retval;
@@ -69,7 +69,7 @@ public class NoteDatabase {
         db.beginTransaction();
         try {
             for (ContentValues value : values) {
-                db.insert(_TABLE_NAME, null, value);
+                db.insert(Companion.get_TABLE_NAME(), null, value);
             }
             db.setTransactionSuccessful();
         } finally {
@@ -79,14 +79,14 @@ public class NoteDatabase {
 
     public void update(Note note) {
         ContentValues values = fromNote(note);
-        helper.getWritableDatabase().update(_TABLE_NAME,
+        helper.getWritableDatabase().update(Companion.get_TABLE_NAME(),
                 values,
                 _ID + " = ?",
                 new String[]{ Integer.toString(note.getId()) });
     }
 
     public void delete(Note note) {
-        helper.getWritableDatabase().delete(_TABLE_NAME,
+        helper.getWritableDatabase().delete(Companion.get_TABLE_NAME(),
                 _ID + " = ?",
                 new String[]{ Integer.toString(note.getId()) });
     }
@@ -116,10 +116,10 @@ public class NoteDatabase {
         if (id != -1) {
             values.put(_ID, id);
         }
-        values.put(TEXT, note.getText());
-        values.put(IS_PINNED, note.isPinned());
-        values.put(CREATED_AT, note.getCreatedAt().getTime());
-        values.put(UPDATED_AT, note.getUpdatedAt().getTime());
+        values.put(Companion.getTEXT(), note.getText());
+        values.put(Companion.getIS_PINNED(), note.isPinned());
+        values.put(Companion.getCREATED_AT(), note.getCreatedAt().getTime());
+        values.put(Companion.getUPDATED_AT(), note.getUpdatedAt().getTime());
         return values;
     }
 
